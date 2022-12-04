@@ -1,0 +1,26 @@
+---
+title: "Cpp Notes"
+author: "Alec James van Rassel"
+format: pdf
+---
+
+To start learning C++, I used [this website](https://www.learncpp.com/). 
+
+##  Setting up
+Need to insure that C++ is installed on the computer. This program is called g++
+
+##  Executing code
+Code can be compiled directly from the command line with the command 
+`g++ -o file_write_output file_code.cpp -pedantic-errors -Wall -Weffc++ -Wextra -Wsign-conversion`.
++   The `-o` flag tells C++ to write the __o__utput to the specified file of the cpp source code
++   The `-pedantic-errors` flag is reccomended by the tutorial to be as strict as possible
+To then run the code, we run it like any other shell script: `./file_write_output`
++   The `-Wall -Weffc++ -Wextra -Wsign-conversion` flag is to have the maximum warnings
+    and is strongly reccomended, especially while learning.
+
+##  Compilers
+The tutorial explains that there are multiple compilers and that it's possible
+for C++ code to compile in one but not the other. For this reason they reccomend 
+to disable all individualities of the compiler to follow a standard with the 
+`-pedantic-errors` being very strict.
+
