@@ -1,2 +1,12 @@
 *.DS_STORE
 *.Rproj.user
+.Rproj.user
+*.RData
+.Rhistory
+*.aux
+*.log
+*.tex
+
+
+fun_programs_practice/add_2_integers
+fun_programs_practice/convert_meters_feet

@@ -9,6 +9,7 @@ To start learning C++, I used [this website](https://www.learncpp.com/).
 ##  Setting up
 Need to insure that C++ is installed on the computer. This program is called g++
 
+
 ##  Executing code
 Code can be compiled directly from the command line with the command 
 `g++ -o file_write_output file_code.cpp -pedantic-errors -Wall -Weffc++ -Wextra -Wsign-conversion`.
@@ -23,4 +24,82 @@ The tutorial explains that there are multiple compilers and that it's possible
 for C++ code to compile in one but not the other. For this reason they reccomend 
 to disable all individualities of the compiler to follow a standard with the 
 `-pedantic-errors` being very strict.
+
+## Standard Library (stl)
+One of most used elements are vectors
+
+## Google Test
+Testing framework for C++ mostly comprised of preprocessor macros
+
+Macros:
+    -   define a test: `TEST(nameOfCase, nameOfTest)`
+    -   non-critical assertions: `EXPECT_`
+        +   examples: EXPECT_(TRUE|FALSE), EXPECT_(NO_)THROW, EXPECT_FLOAT_(EQ|NE), EXPECT_DEATH
+    -   critical assertions: `ASSERT_`
+example:
+
+```cpp
+#include <gtest/gtest.h>
+TEST(SomeTestCase, someTest) {
+    int someInt = 1 ;
+    // code ...
+    EXPECT_EQ(1, SOMEINT) ;
+```
+
+### Custom Assertion(s)
+Possible to create custom assertion using `EXPECT_TRUE` and a function returning an object of type `::testing::AssertionResult`
+
+```cpp
+::testing::AssertionResult isOk(int someint) {
+    if(someint == 42) {
+        return ::testing::AssertionSuccess()
+            << someint << " is ok" ;
+    } else {
+        return ::testing::AssertionFailure()
+            << someint << " is wrong" ;
+    }
+}
+```
+
+```cpp
+EXPECT_TRUE(isOk(42)) ; // ok
+EXPECT_TRUE(isOk(12)) ; // is wrong
+```
+
+
+## Libraries
+
+Types:
+
+1.  Static (.a archive)
+1.  Dynamic (shared; .so shared object, .dylib dynamic library, .dll dynamic loaded library)
+
+Considerations:
+
+-   All libraries must begin with the prefix *lib* under unix so that they're recognized as libraries at **link time** (`-l` option)
+-   the conmpiler must know a function exists (*declaration*) before being able to call it in code
+-   this is why we must publicly expose the library API in header files (.h)
+    -   When we include a library, we must also include its public headers
+
+### Static
+A static library is an archive of compiled code, so to link a static library is just to integrate the entirety of its code in the executable
+
+to include in CMakeList: `add_library(name STATIC source...)`
+
+### Dyamic
+They have 2 main advantages:
+
+1.  Share code while saving disk space
+1.  It's dynamic nature: library's loaded at runtime only, and it's possible to load/unload them with by calling function from the **dynamic loader**
+
+To include in CMakeList: `add_library(name SHARED source...)`
+
+### Linkage options
+to link a library to an executable file or a dynamic library:
+
+-   option `-l` of the compiler w/ the library name (w/o lib prefix nor file extension)
+-   option `-L` of the compiler to indicate where it can be found if it's not in the ***default location*** (/usr/lib, /usr/local/lib, etc.)
+    +   link_directories dans CMakeList
+-   option `-I` of the compiler to indicate additional locations where the pre-processor could find header files
+    +   include_directories dans CMakeList
 
