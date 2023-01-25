@@ -28,45 +28,6 @@ to disable all individualities of the compiler to follow a standard with the
 ## Standard Library (stl)
 One of most used elements are vectors
 
-## Google Test
-Testing framework for C++ mostly comprised of preprocessor macros
-
-Macros:
-    -   define a test: `TEST(nameOfCase, nameOfTest)`
-    -   non-critical assertions: `EXPECT_`
-        +   examples: EXPECT_(TRUE|FALSE), EXPECT_(NO_)THROW, EXPECT_FLOAT_(EQ|NE), EXPECT_DEATH
-    -   critical assertions: `ASSERT_`
-example:
-
-```cpp
-#include <gtest/gtest.h>
-TEST(SomeTestCase, someTest) {
-    int someInt = 1 ;
-    // code ...
-    EXPECT_EQ(1, SOMEINT) ;
-```
-
-### Custom Assertion(s)
-Possible to create custom assertion using `EXPECT_TRUE` and a function returning an object of type `::testing::AssertionResult`
-
-```cpp
-::testing::AssertionResult isOk(int someint) {
-    if(someint == 42) {
-        return ::testing::AssertionSuccess()
-            << someint << " is ok" ;
-    } else {
-        return ::testing::AssertionFailure()
-            << someint << " is wrong" ;
-    }
-}
-```
-
-```cpp
-EXPECT_TRUE(isOk(42)) ; // ok
-EXPECT_TRUE(isOk(12)) ; // is wrong
-```
-
-
 ## Libraries
 
 Types:
@@ -81,25 +42,30 @@ Considerations:
 -   this is why we must publicly expose the library API in header files (.h)
     -   When we include a library, we must also include its public headers
 
-### Static
-A static library is an archive of compiled code, so to link a static library is just to integrate the entirety of its code in the executable
+## Objects 
 
-to include in CMakeList: `add_library(name STATIC source...)`
+There are 2 ways to instantiate objects:
 
-### Dyamic
-They have 2 main advantages:
+1.  Stack: has a lifespan limited by the scope of its declaration location 
+-   The memory used to store the object in surface is the stack's memory, thus it's automatically generated at execution
 
-1.  Share code while saving disk space
-1.  It's dynamic nature: library's loaded at runtime only, and it's possible to load/unload them with by calling function from the **dynamic loader**
+Example:
+```
+{
+    A a; // instanciation on the stack
+    std::cout << a.i << std::endl;
+} // call of deconstructor, a.~A() is generated at compilation
+```
 
-To include in CMakeList: `add_library(name SHARED source...)`
+2.  Heap (`new`): unlimited lifespan, must be manually uninstantiated (a.k.a. *dynamic allocation*)
+-   Requries allocation memory 'sur le tas' (**heap**) dynamically (while executing the program)
+-   Since we're allocating a specific portion of memory to the object, it's important to de-instanciate it to recover the memory and not have a **leak**
 
-### Linkage options
-to link a library to an executable file or a dynamic library:
-
--   option `-l` of the compiler w/ the library name (w/o lib prefix nor file extension)
--   option `-L` of the compiler to indicate where it can be found if it's not in the ***default location*** (/usr/lib, /usr/local/lib, etc.)
-    +   link_directories dans CMakeList
--   option `-I` of the compiler to indicate additional locations where the pre-processor could find header files
-    +   include_directories dans CMakeList
-
+Example:
+```
+{
+    A *a = new A;
+    // some operations
+    delete a;
+}
+```
